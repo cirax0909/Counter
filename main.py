@@ -12,7 +12,9 @@ LONG_BREAK_MIN = 20
 reps = 0
 # ---------------------------- TIMER RESET ------------------------------- # 
 
-# ---------------------------- TIMER MECHANISM ------------------------------- # 
+# ---------------------------- TIMER MECHANISM ------------------------------- #
+
+
 def trigger():
     global reps
     reps += 1
@@ -21,11 +23,16 @@ def trigger():
     long_break_min = LONG_BREAK_MIN
     if reps in (1, 3, 5, 7):
         count_down(work_sec)
+        time_label.config(text="WORK", fg=GREEN)
     elif reps in (2, 4, 6):
         count_down(short_break_sec)
+        time_label.config(text="BREAK", fg=PINK)
     elif reps == 8:
         count_down(long_break_min)
-# ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
+        time_label.config(text="WORK", fg=RED)
+# ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
+
+
 def count_down(count):
     count_min = math.floor(count/60)
     count_sec = count % 60
@@ -33,10 +40,12 @@ def count_down(count):
         count_sec = "0" + str(count_sec)
     canvas.itemconfig(clock, text=f"{count_min}:{count_sec}")
     if count > 0:
-        canvas.after(1000, count_down, count -1)
+        canvas.after(1000, count_down, count - 1)
     else:
-
+        trigger()
 # ---------------------------- UI SETUP ------------------------------- #
+
+
 window = Tk()
 window.title("Amaterasu")
 window.config(padx=100, pady=50, bg=YELLOW)
@@ -44,6 +53,7 @@ window.config(padx=100, pady=50, bg=YELLOW)
 #timer label
 time_label = Label(text="TIMER", bg=YELLOW, fg=GREEN, font=(FONT_NAME, 50, "bold"))
 time_label.grid(column=1, row=0)
+
 
 #tomato
 canvas = Canvas(width=200, height=224, bg=YELLOW, highlightthickness=0)
@@ -63,7 +73,6 @@ reset_button.grid(column=2, row=2)
 #checkmark
 check_mark = Label(text="✔", fg=GREEN, bg=YELLOW, font=(FONT_NAME, 35, "bold"))
 check_mark.grid(column=1, row=3)
-
 
 
 window.mainloop()
