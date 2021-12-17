@@ -6,7 +6,7 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 25
+WORK_MIN = 1
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 reps = 0
@@ -19,17 +19,18 @@ def trigger():
     global reps
     reps += 1
     work_sec = WORK_MIN * 60
-    short_break_sec = SHORT_BREAK_MIN
-    long_break_min = LONG_BREAK_MIN
-    if reps in (1, 3, 5, 7):
-        count_down(work_sec)
-        time_label.config(text="WORK", fg=GREEN)
-    elif reps in (2, 4, 6):
-        count_down(short_break_sec)
+    short_break_min = SHORT_BREAK_MIN * 60
+    long_break_min = LONG_BREAK_MIN * 60
+
+    if reps % 2 == 0:
+        count_down(short_break_min)
         time_label.config(text="BREAK", fg=PINK)
-    elif reps == 8:
+    elif reps % 8 == 0:
         count_down(long_break_min)
         time_label.config(text="WORK", fg=RED)
+    else:
+        count_down(work_sec)
+        time_label.config(text="WORK", fg=GREEN)
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 
 
@@ -43,6 +44,12 @@ def count_down(count):
         canvas.after(1000, count_down, count - 1)
     else:
         trigger()
+        if reps % 2 == 0:
+            marks = ""
+            work_sessions = math.floor(reps/2)
+            for n in range(work_sessions):
+                marks += "✔"
+            check_mark.config(text=marks)
 # ---------------------------- UI SETUP ------------------------------- #
 
 
@@ -71,7 +78,7 @@ reset_button = Button(text="Reset")
 reset_button.grid(column=2, row=2)
 
 #checkmark
-check_mark = Label(text="✔", fg=GREEN, bg=YELLOW, font=(FONT_NAME, 35, "bold"))
+check_mark = Label(fg=GREEN, bg=YELLOW, font=(FONT_NAME, 35, "bold"))
 check_mark.grid(column=1, row=3)
 
 
